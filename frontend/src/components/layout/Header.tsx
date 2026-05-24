@@ -13,7 +13,11 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  onToggleMobileMenu?: () => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({ onToggleMobileMenu }) => {
   const { user, clearAuth, theme, toggleTheme } = useAuthStore();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
@@ -58,6 +62,15 @@ export const Header: React.FC = () => {
   return (
     <header className="fixed top-0 left-0 right-0 h-16 glass-panel border-b border-slate-200/50 flex items-center justify-between px-6 z-40">
       <div className="flex items-center gap-3">
+        {onToggleMobileMenu && (
+          <button
+            onClick={onToggleMobileMenu}
+            className="lg:hidden p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors mr-1"
+            title="Toggle Menu"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
         <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-secondary flex items-center justify-center shadow-md shadow-primary/20">
           <TrendingUpIcon className="w-6 h-6 text-white" />
         </div>

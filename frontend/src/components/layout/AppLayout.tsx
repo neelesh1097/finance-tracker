@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
@@ -13,6 +14,12 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
   const [resending, setResending] = useState(false);
   const [message, setMessage] = useState('');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,10 +126,20 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
 
   return (
     <div className="min-h-screen bg-mesh bg-mesh-light">
-      <Header />
+      <Header onToggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)} />
       <div className="flex">
-        <Sidebar isCollapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
-        <main className={`flex-1 pr-8 pt-24 pb-12 min-h-screen transition-all duration-300 ${sidebarCollapsed ? 'pl-28' : 'pl-72'}`}>
+        <Sidebar 
+          isCollapsed={sidebarCollapsed} 
+          onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
+          mobileMenuOpen={mobileMenuOpen}
+        />
+        {mobileMenuOpen && (
+          <div 
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-20 lg:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
+        <main className={`flex-1 pr-4 pl-4 lg:pr-8 pt-24 pb-12 min-h-screen transition-all duration-300 ${sidebarCollapsed ? 'lg:pl-28' : 'lg:pl-72'}`}>
           {children}
         </main>
       </div>

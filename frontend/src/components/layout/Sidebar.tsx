@@ -16,9 +16,10 @@ import {
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
+  mobileMenuOpen?: boolean;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle, mobileMenuOpen }) => {
   const menuItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
     { name: 'Expenses', path: '/expenses', icon: Receipt },
@@ -30,7 +31,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
   ];
 
   return (
-    <aside className={`glass-panel border-r border-slate-200/50 min-h-screen p-4 flex flex-col justify-between fixed left-0 top-0 z-30 pt-20 transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'}`}>
+    <aside className={`glass-panel border-r border-slate-200/50 min-h-screen p-4 flex flex-col justify-between fixed left-0 top-0 z-30 pt-20 transition-all duration-300 lg:translate-x-0 ${isCollapsed ? 'lg:w-20' : 'lg:w-64'} ${mobileMenuOpen ? 'translate-x-0 w-64' : '-translate-x-full w-64'}`}>
       <div className="space-y-6">
         <div className="flex items-center justify-between px-3 py-2">
           {!isCollapsed && (
