@@ -16,6 +16,9 @@ import notificationRoutes from './routes/notification.routes';
 
 const app = express();
 
+// Trust reverse proxy headers (e.g. Render load balancer) for accurate client IP rate limiting
+app.set('trust proxy', 1);
+
 // Security middlewares
 app.use(helmet());
 app.use(cors());
