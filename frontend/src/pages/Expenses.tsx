@@ -194,15 +194,15 @@ export const Expenses: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Panel */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight font-sans">Expense Ledger</h1>
           <p className="text-slate-500 text-sm">Log transactions, analyze payments, and scan bank statements.</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3 w-full sm:w-auto">
           <button
             onClick={() => setShowUploadModal(true)}
-            className="glass-panel text-slate-700 hover:text-slate-900 border border-slate-200/50 hover:bg-slate-50 px-4 py-2.5 rounded-xl font-medium flex items-center gap-2 shadow-sm transition-all"
+            className="glass-panel text-slate-700 hover:text-slate-900 border border-slate-200/50 hover:bg-slate-50 px-4 py-2.5 rounded-xl font-medium flex items-center justify-center gap-2 shadow-sm transition-all w-full sm:w-auto"
           >
             <UploadCloud className="w-5 h-5 text-slate-500" />
             <span>Import Statement</span>
@@ -210,7 +210,7 @@ export const Expenses: React.FC = () => {
           
           <button
             onClick={() => setShowFormModal(true)}
-            className="bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl font-medium flex items-center gap-2 shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
+            className="bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl font-medium flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] w-full sm:w-auto"
           >
             <Plus className="w-5 h-5" />
             <span>Add Expense</span>
@@ -541,7 +541,7 @@ export const Expenses: React.FC = () => {
                     <span className="font-bold">{statementFile?.name}</span>
                   </div>
 
-                  <div className="border border-slate-200/60 rounded-xl overflow-hidden max-h-96 overflow-y-auto">
+                  <div className="border border-slate-200/60 rounded-xl overflow-x-auto overflow-y-auto max-h-96">
                     <table className="w-full text-left text-xs border-collapse">
                       <thead className="bg-slate-50 text-[9px] text-slate-400 font-bold uppercase tracking-wider border-b border-slate-200 sticky top-0 z-10">
                         <tr>

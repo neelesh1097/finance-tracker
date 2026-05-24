@@ -88,14 +88,14 @@ export const Goals: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Panel */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight font-sans">Goal Planner</h1>
           <p className="text-slate-500 text-sm">Create targeted financial goals and track projected timelines with compounding yield calculators.</p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl font-medium flex items-center gap-2 shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
+          className="bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl font-medium flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] w-full sm:w-auto"
         >
           <Plus className="w-5 h-5" />
           <span>New Goal</span>

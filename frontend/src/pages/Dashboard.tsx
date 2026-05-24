@@ -111,7 +111,7 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight font-sans">Financial Hub</h1>
           <p className="text-slate-500 text-sm">Real-time assets growth, expense categories, and balance projections.</p>

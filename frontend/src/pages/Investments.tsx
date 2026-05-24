@@ -174,16 +174,16 @@ export const Investments: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Panel */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight font-sans">Investment Analytics</h1>
           <p className="text-slate-500 text-sm">Track stocks, index mutual funds, interest bonds, and run financial planning tools.</p>
         </div>
-        <div className="flex gap-2.5">
-          <div className="border border-slate-200 bg-white/70 p-1 rounded-xl flex gap-1">
+        <div className="flex flex-wrap gap-2.5 w-full md:w-auto">
+          <div className="border border-slate-200 bg-white/70 p-1 rounded-xl flex gap-1 w-full md:w-auto justify-center">
             <button
               onClick={() => setActiveTab('portfolio')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${activeTab === 'portfolio'
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex-1 md:flex-none text-center ${activeTab === 'portfolio'
                   ? 'bg-slate-800 text-white shadow-sm'
                   : 'text-slate-600 hover:text-slate-800'
                 }`}
@@ -192,7 +192,7 @@ export const Investments: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('calculators')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${activeTab === 'calculators'
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex-1 md:flex-none text-center ${activeTab === 'calculators'
                   ? 'bg-slate-800 text-white shadow-sm'
                   : 'text-slate-600 hover:text-slate-800'
                 }`}
@@ -204,7 +204,7 @@ export const Investments: React.FC = () => {
           {activeTab === 'portfolio' && (
             <button
               onClick={() => setShowAddModal(true)}
-              className="bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl font-medium flex items-center gap-2 shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
+              className="bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl font-medium flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] w-full md:w-auto"
             >
               <Plus className="w-5 h-5" />
               <span>Add Asset</span>
@@ -409,7 +409,7 @@ export const Investments: React.FC = () => {
                 {(() => {
                   const res = calculateSIPResult();
                   return (
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/50 grid grid-cols-3 gap-4 text-center">
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/50 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                       <div>
                         <span className="text-[10px] text-slate-400 font-bold uppercase">Invested</span>
                         <p className="text-sm font-extrabold text-slate-700 mt-1">₹{res.invested.toLocaleString()}</p>
@@ -488,7 +488,7 @@ export const Investments: React.FC = () => {
                 {(() => {
                   const res = calculateCIResult();
                   return (
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/50 grid grid-cols-3 gap-4 text-center">
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/50 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                       <div>
                         <span className="text-[10px] text-slate-400 font-bold uppercase">Principal</span>
                         <p className="text-sm font-extrabold text-slate-700 mt-1">₹{res.invested.toLocaleString()}</p>
@@ -516,7 +516,7 @@ export const Investments: React.FC = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold text-slate-400 uppercase">Initial (₹)</label>
                       <input
@@ -564,7 +564,7 @@ export const Investments: React.FC = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold text-slate-400 uppercase">Principal (₹)</label>
                       <input
@@ -599,7 +599,7 @@ export const Investments: React.FC = () => {
                 {(() => {
                   const res = calculateSIResult();
                   return (
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/50 grid grid-cols-3 gap-4 text-center">
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/50 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                       <div>
                         <span className="text-[10px] text-slate-400 font-bold uppercase">Principal</span>
                         <p className="text-sm font-extrabold text-slate-700 mt-1">₹{res.invested.toLocaleString()}</p>

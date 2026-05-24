@@ -132,10 +132,11 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
           isCollapsed={sidebarCollapsed} 
           onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
           mobileMenuOpen={mobileMenuOpen}
+          onCloseMobileMenu={() => setMobileMenuOpen(false)}
         />
         {mobileMenuOpen && (
           <div 
-            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-20 lg:hidden"
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-45 lg:hidden"
             onClick={() => setMobileMenuOpen(false)}
           />
         )}

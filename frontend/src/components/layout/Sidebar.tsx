@@ -10,16 +10,18 @@ import {
   TrendingUp,
   Settings,
   Menu,
-  ChevronLeft
+  ChevronLeft,
+  X
 } from 'lucide-react';
 
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
   mobileMenuOpen?: boolean;
+  onCloseMobileMenu?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle, mobileMenuOpen }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle, mobileMenuOpen, onCloseMobileMenu }) => {
   const menuItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
     { name: 'Expenses', path: '/expenses', icon: Receipt },
@@ -31,7 +33,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle, mobileM
   ];
 
   return (
-    <aside className={`glass-panel border-r border-slate-200/50 min-h-screen p-4 flex flex-col justify-between fixed left-0 top-0 z-30 pt-20 transition-all duration-300 lg:translate-x-0 ${isCollapsed ? 'lg:w-20' : 'lg:w-64'} ${mobileMenuOpen ? 'translate-x-0 w-64' : '-translate-x-full w-64'}`}>
+    <aside className={`glass-panel border-r border-slate-200/50 min-h-screen p-4 flex flex-col justify-between fixed left-0 top-0 transition-all duration-300 z-50 pt-4 lg:pt-20 lg:z-30 lg:translate-x-0 ${isCollapsed ? 'lg:w-20' : 'lg:w-64'} ${mobileMenuOpen ? 'translate-x-0 w-64' : '-translate-x-full w-64'}`}>
       <div className="space-y-6">
         <div className="flex items-center justify-between px-3 py-2">
           {!isCollapsed && (
@@ -40,11 +42,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle, mobileM
             </p>
           )}
           <button
-            onClick={onToggle}
+            onClick={() => {
+              if (mobileMenuOpen && onCloseMobileMenu) {
+                onCloseMobileMenu();
+              } else {
+                onToggle();
+              }
+            }}
             className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors ml-auto flex items-center justify-center"
-            title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+            title={mobileMenuOpen ? "Close Menu" : (isCollapsed ? "Expand Sidebar" : "Collapse Sidebar")}
           >
-            {isCollapsed ? <Menu className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+            {mobileMenuOpen ? (
+              <X className="w-5 h-5 text-slate-600" />
+            ) : (
+              isCollapsed ? <Menu className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />
+            )}
           </button>
         </div>
         <nav className="space-y-1">
