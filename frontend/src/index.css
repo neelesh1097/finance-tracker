@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#F8FAFC] text-slate-800 font-sans;
+  }
+}
+
+/* Glassmorphism utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04);
+}
+
+.glass-panel-dark {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+.glass-card {
+  @apply glass-panel rounded-2xl transition-all duration-300 hover:shadow-glassHover hover:-translate-y-0.5;
+}
+
+.glass-card-no-hover {
+  @apply glass-panel rounded-2xl;
+}
+
+/* Custom Scrollbar for sleek UI */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Background grid styling like Cred/Notion dashboards */
+.bg-mesh {
+  background-image: radial-gradient(at 0% 0%, hsla(220,100%,95%,1) 0px, transparent 50%),
+                    radial-gradient(at 100% 0%, hsla(180,100%,95%,1) 0px, transparent 50%),
+                    radial-gradient(at 50% 100%, hsla(35,100%,96%,1) 0px, transparent 50%);
+}
+
+.bg-auth-mesh {
+  background-image: radial-gradient(at 20% 20%, hsla(217, 91%, 90%, 1) 0px, transparent 40%),
+                    radial-gradient(at 80% 80%, hsla(170, 78%, 88%, 1) 0px, transparent 40%);
+}
+
+/* Micro-animations */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(37, 99, 235, 0.3);
+  }
+}
+
+.pulse-glow {
+  animation: pulseGlow 3s infinite ease-in-out;
+}

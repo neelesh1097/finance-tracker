@@ -1,0 +1,257 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  USER
+  VIEWER
+}
+
+enum BudgetType {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+enum ExpenseCategory {
+  Rent
+  Groceries
+  Utilities
+  Transport
+  Shopping
+  Entertainment
+  Education
+  Medical
+  Travel
+  Investments
+  Other
+  Needs_Review
+}
+
+enum InvestmentType {
+  Mutual_Funds
+  SIP
+  Stocks
+  Bonds
+  Fixed_Deposit
+  PPF
+  EPF
+  Crypto
+}
+
+enum SplitMethod {
+  EQUAL
+  PERCENTAGE
+  CUSTOM
+}
+
+enum NotificationType {
+  BUDGET_ALERT
+  GOAL_MILESTONE
+  SUBSCRIPTION_RENEWAL
+  BILL_REMINDER
+  INVESTMENT_MATURITY
+}
+
+model User {
+  id                   String            @id @default(uuid())
+  name                 String
+  email                String            @unique
+  passwordHash         String
+  role                 Role              @default(USER)
+  emailVerified        Boolean           @default(false)
+  verificationToken    String?           @db.VarChar(255)
+  verificationTokenExp DateTime?
+  resetToken           String?           @db.VarChar(255)
+  resetTokenExp        DateTime?
+  refreshToken         String?           @db.Text
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  monthlyIncome        Decimal           @default(50000.00) @db.Decimal(15, 2)
+
+  expenses             Expense[]
+  investments          Investment[]
+  goals                Goal[]
+  budgets              Budget[]
+  subscriptions        Subscription[]
+  walletMemberships    WalletMember[]
+  auditLogs            AuditLog[]
+  notifications        Notification[]
+  forecasts            Forecast[]
+  sharedExpensesPaid   SharedExpense[]   @relation("PaidByRelation")
+}
+
+model Expense {
+  id                String          @id @default(uuid())
+  userId            String
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount            Decimal         @db.Decimal(15, 2)
+  category          ExpenseCategory
+  description       String?         @db.VarChar(500)
+  date              DateTime
+  paymentMethod     String          @db.VarChar(50)
+  merchantName      String          @db.VarChar(100)
+  transactionSource String          @db.VarChar(50)
+  recurring         Boolean         @default(false)
+  attachmentUrl     String?         @db.VarChar(500)
+  createdAt         DateTime        @default(now())
+
+  @@index([userId])
+  @@index([date])
+  @@index([category])
+}
+
+model Investment {
+  id            String         @id @default(uuid())
+  userId        String
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount        Decimal        @db.Decimal(15, 2)
+  investmentType InvestmentType
+  interestRate  Decimal        @db.Decimal(5, 2)
+  startDate     DateTime
+  maturityDate  DateTime?
+  currentValue  Decimal        @db.Decimal(15, 2)
+  expectedValue Decimal        @db.Decimal(15, 2)
+  createdAt     DateTime       @default(now())
+
+  @@index([userId])
+}
+
+model Goal {
+  id                    String    @id @default(uuid())
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goalName              String    @db.VarChar(100)
+  targetAmount          Decimal   @db.Decimal(15, 2)
+  currentAmount         Decimal   @db.Decimal(15, 2)
+  monthlyContribution   Decimal   @db.Decimal(15, 2)
+  expectedAnnualReturn  Decimal   @db.Decimal(5, 2)
+  targetDate            DateTime
+  createdAt             DateTime  @default(now())
+
+  @@index([userId])
+}
+
+model Budget {
+  id             String          @id @default(uuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  budgetAmount   Decimal         @db.Decimal(15, 2)
+  budgetCategory ExpenseCategory
+  budgetType     BudgetType
+  startDate      DateTime
+  endDate        DateTime
+  createdAt      DateTime        @default(now())
+
+  @@index([userId])
+}
+
+model Subscription {
+  id              String          @id @default(uuid())
+  userId          String
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  merchantName    String          @db.VarChar(100)
+  amount          Decimal         @db.Decimal(15, 2)
+  category        ExpenseCategory
+  interval        String          @db.VarChar(20)
+  lastPaymentDate DateTime
+  nextPaymentDate DateTime
+  active          Boolean         @default(true)
+  createdAt       DateTime        @default(now())
+
+  @@index([userId])
+}
+
+model Wallet {
+  id        String         @id @default(uuid())
+  name      String         @db.VarChar(100)
+  createdAt DateTime       @default(now())
+  members   WalletMember[]
+  expenses  SharedExpense[]
+  presets   WalletSplitPreset[]
+}
+
+model WalletSplitPreset {
+  id           String      @id @default(uuid())
+  walletId     String
+  wallet       Wallet      @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  name         String      @db.VarChar(100)
+  splitMethod  SplitMethod
+  shares       String      @db.Text // JSON string: Record<userId, number>
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([walletId])
+}
+
+model WalletMember {
+  id        String   @id @default(uuid())
+  walletId  String
+  wallet    Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      String   @db.VarChar(20)
+  joinedAt  DateTime @default(now())
+
+  @@unique([walletId, userId])
+}
+
+model SharedExpense {
+  id          String      @id @default(uuid())
+  walletId    String
+  wallet      Wallet      @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  paidById    String
+  paidBy      User        @relation("PaidByRelation", fields: [paidById], references: [id], onDelete: Cascade)
+  amount      Decimal     @db.Decimal(15, 2)
+  description String      @db.VarChar(255)
+  category    ExpenseCategory
+  splitMethod SplitMethod
+  splitDetails String     @db.Text
+  date        DateTime
+  createdAt   DateTime    @default(now())
+
+  @@index([walletId])
+}
+
+model Forecast {
+  id                 String   @id @default(uuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  monthEndDate       DateTime
+  predictedBalance   Decimal  @db.Decimal(15, 2)
+  predictedOverspend Decimal  @db.Decimal(15, 2)
+  categoryForecasts  String   @db.Text
+  createdAt          DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message   String           @db.VarChar(500)
+  type      NotificationType
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  @@index([userId])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String   @db.VarChar(255)
+  ipAddress String?  @db.VarChar(45)
+  userAgent String?  @db.Text
+  timestamp DateTime @default(now())
+
+  @@index([userId])
+}
