@@ -1,12 +1,12 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Receipt, 
-  LineChart, 
-  Target, 
-  Wallet, 
-  CalendarDays, 
+import {
+  LayoutDashboard,
+  Receipt,
+  LineChart,
+  Target,
+  Wallet,
+  CalendarDays,
   TrendingUp,
   Settings
 } from 'lucide-react';
@@ -38,10 +38,9 @@ export const Sidebar: React.FC = () => {
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02]'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
+                    ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02]'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                   }`
                 }
               >
@@ -59,7 +58,7 @@ export const Sidebar: React.FC = () => {
             AG
           </div>
           <div>
-            <h4 className="text-xs font-semibold text-slate-700">Antigravity V1.0</h4>
+            <h4 className="text-xs font-semibold text-slate-700"></h4>
             <p className="text-[10px] text-slate-400">Enterprise Edition</p>
           </div>
         </div>
