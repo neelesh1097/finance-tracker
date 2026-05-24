@@ -191,9 +191,18 @@ export class StatementService {
   }
 
   private parseDateString(dateStr: string): Date {
+    // Check if the input is a pure numeric string representing an Excel serial date
+    const num = Number(dateStr);
+    if (!isNaN(num) && num > 30000 && num < 60000) {
+      // Excel serial date to JS Date: 25569 is days between Jan 1, 1900 and Jan 1, 1970
+      return new Date((num - 25569) * 86400 * 1000);
+    }
+
     // Try standard JS date parsing
     let parsed = new Date(dateStr);
-    if (!isNaN(parsed.getTime())) return parsed;
+    // Standard JS Date constructor parses 5-digit numbers as years (e.g. "46144" as year 46144)
+    // We restrict valid years to < 3000 to catch this error and fallback to our custom format parsers
+    if (!isNaN(parsed.getTime()) && parsed.getFullYear() < 3000) return parsed;
 
     // Try common statement formats like DD-MM-YYYY, DD/MM/YYYY, YYYY/MM/DD
     const formats = ['dd-MM-yyyy', 'dd/MM/yyyy', 'yyyy-MM-dd', 'yyyy/MM/dd', 'dd MMM yyyy', 'dd-MMM-yyyy'];
