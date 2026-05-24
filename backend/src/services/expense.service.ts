@@ -106,7 +106,8 @@ export class ExpenseService {
       const totalExpenses = await this.expenseRepository.sumExpenses(
         userId,
         budget.startDate,
-        budget.endDate
+        budget.endDate,
+        budget.budgetCategory
       );
 
       const utilization = (totalExpenses / budgetAmount) * 100;

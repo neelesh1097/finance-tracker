@@ -67,15 +67,21 @@ export class ExpenseRepository {
     return prisma.expense.count({ where });
   }
 
-  async sumExpenses(userId: string, startDate: Date, endDate: Date): Promise<number> {
-    const result = await prisma.expense.aggregate({
-      where: {
-        userId,
-        date: {
-          gte: startDate,
-          lte: endDate,
-        },
+  async sumExpenses(userId: string, startDate: Date, endDate: Date, category?: string): Promise<number> {
+    const where: Prisma.ExpenseWhereInput = {
+      userId,
+      date: {
+        gte: startDate,
+        lte: endDate,
       },
+    };
+
+    if (category) {
+      where.category = category as any;
+    }
+
+    const result = await prisma.expense.aggregate({
+      where,
       _sum: {
         amount: true,
       },

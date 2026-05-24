@@ -51,7 +51,8 @@ export class BudgetService {
       const spent = await this.expenseRepository.sumExpenses(
         userId,
         b.startDate,
-        b.endDate
+        b.endDate,
+        b.budgetCategory
       );
 
       const budgetAmount = Number(b.budgetAmount);

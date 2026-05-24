@@ -11,7 +11,8 @@ import {
   X, 
   RefreshCw,
   Clock,
-  Sparkles
+  Sparkles,
+  Pencil
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -21,6 +22,7 @@ export const Goals: React.FC = () => {
 
   // Modals state
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editingGoal, setEditingGoal] = useState<any>(null);
 
   // Form fields state
   const [goalName, setGoalName] = useState('');
@@ -50,6 +52,17 @@ export const Goals: React.FC = () => {
     },
   });
 
+  // Mutation: Update Goal
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: any }) => api.put(`/goals/${id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboardAnalytics'] });
+      setShowAddModal(false);
+      resetForm();
+    },
+  });
+
   // Mutation: Delete Goal
   const deleteMutation = useMutation({
     mutationFn: (id: string) => api.delete(`/goals/${id}`),
@@ -61,14 +74,31 @@ export const Goals: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createMutation.mutate({
+    const payload = {
       goalName,
       targetAmount: parseFloat(targetAmount),
       currentAmount: parseFloat(currentAmount),
       monthlyContribution: parseFloat(monthlyContribution),
       expectedAnnualReturn: parseFloat(expectedAnnualReturn),
       targetDate: new Date(targetDate).toISOString(),
-    });
+    };
+
+    if (editingGoal) {
+      updateMutation.mutate({ id: editingGoal.id, data: payload });
+    } else {
+      createMutation.mutate(payload);
+    }
+  };
+
+  const handleEdit = (goal: any) => {
+    setEditingGoal(goal);
+    setGoalName(goal.goalName);
+    setTargetAmount(goal.targetAmount.toString());
+    setCurrentAmount(goal.currentAmount.toString());
+    setMonthlyContribution(goal.monthlyContribution.toString());
+    setExpectedAnnualReturn(goal.expectedAnnualReturn.toString());
+    setTargetDate(format(new Date(goal.targetDate), 'yyyy-MM-dd'));
+    setShowAddModal(true);
   };
 
   const handleDelete = (id: string) => {
@@ -83,6 +113,8 @@ export const Goals: React.FC = () => {
     setCurrentAmount('');
     setMonthlyContribution('');
     setExpectedAnnualReturn('');
+    setTargetDate(format(new Date(), 'yyyy-MM-dd'));
+    setEditingGoal(null);
   };
 
   return (
@@ -122,12 +154,22 @@ export const Goals: React.FC = () => {
                       <Target className="w-5 h-5 text-primary" />
                       <span>{goal.goalName}</span>
                     </h3>
-                    <button
-                      onClick={() => handleDelete(goal.id)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-600"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => handleEdit(goal)}
+                        className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-850"
+                        title="Edit Goal"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(goal.id)}
+                        className="p-1.5 rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-600"
+                        title="Delete Goal"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4 mt-3 text-xs text-slate-500">
@@ -224,8 +266,10 @@ export const Goals: React.FC = () => {
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-xl animate-in zoom-in-95">
             <div className="flex justify-between items-center border-b border-slate-100 pb-2">
-              <h3 className="font-bold text-lg text-slate-800">Configure Savings Target</h3>
-              <button onClick={() => setShowAddModal(false)} className="p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100">
+              <h3 className="font-bold text-lg text-slate-800">
+                {editingGoal ? 'Modify Savings Target' : 'Configure Savings Target'}
+              </h3>
+              <button onClick={() => { setShowAddModal(false); resetForm(); }} className="p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -303,13 +347,13 @@ export const Goals: React.FC = () => {
 
               <button
                 type="submit"
-                disabled={createMutation.isPending}
+                disabled={createMutation.isPending || updateMutation.isPending}
                 className="w-full bg-primary hover:bg-primary-dark text-white font-medium py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all disabled:opacity-50"
               >
-                {createMutation.isPending ? (
+                {createMutation.isPending || updateMutation.isPending ? (
                   <RefreshCw className="w-5 h-5 animate-spin" />
                 ) : (
-                  <span>Save Plan</span>
+                  <span>{editingGoal ? 'Save Changes' : 'Save Plan'}</span>
                 )}
               </button>
             </form>
