@@ -12,6 +12,7 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [message, setMessage] = useState('');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,8 +121,8 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
     <div className="min-h-screen bg-mesh bg-mesh-light">
       <Header />
       <div className="flex">
-        <Sidebar />
-        <main className="flex-1 pl-72 pr-8 pt-24 pb-12 min-h-screen">
+        <Sidebar isCollapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
+        <main className={`flex-1 pr-8 pt-24 pb-12 min-h-screen transition-all duration-300 ${sidebarCollapsed ? 'pl-28' : 'pl-72'}`}>
           {children}
         </main>
       </div>
